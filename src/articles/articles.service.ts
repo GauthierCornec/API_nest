@@ -16,11 +16,29 @@ export class ArticlesService {
         return articles.map((art) => ({id: art.id, title: art.title, description: art.description, url: art.url, cover: art.cover, content: art.content, category: art.category }));
     }
 
-    async getArticlesByCategory(category): Promise<Article[]> { // function qui permet d'afficher les articles selon leurs catégories.
-        const articles = await this.articleModel.find({category});
-        console.log("article", articles);
-        return articles;
+    // async getArticlesByCategory(category): Promise<Article[]> { // function qui permet d'afficher les articles selon leurs catégories.
+    //     const articles = await this.articleModel.find({category});
+    //     console.log("article", articles);
+    //     return
 
+    // }
+
+    async filterByCategory(category: string): Promise<Article[]>{
+        const articles = await this.articleModel.find({}).where('category').equals(category).lean();
+        console.log('articles', articles);
+        return articles[category];
+    }
+
+    async filterByTitle(title: string): Promise<Article[]>{
+        const articles = await this.articleModel.find({}).where('title').equals(title).lean();
+        console.log(articles);
+        return articles[title];
+    }
+
+    async filterByLetter(letter: string): Promise<Article[]>{
+        const articles = await (await this.articleModel.find()).includes
+        console.log(articles)
+        return
     }
 
     // private async findArticlesByCategory(category: string): Promise<Article[]> { 
@@ -37,11 +55,23 @@ export class ArticlesService {
        
     // }
 
-    // async getSingleArticleById(articleId: string){
-    //     const article = await this.findArticleById(articleId);
-    //     console.log('articles', article);
-    //     return {id: article.id, title: article.title, description: article.description, url: article.url, cover: article.cover, content: article.content, category: article.category};
-    // }
+    async getSingleArticleById(articleId: string){
+        const article = await this.findArticleById(articleId);
+        console.log('articles', article);
+        return {id: article.id, title: article.title, description: article.description, url: article.url, cover: article.cover, content: article.content, category: article.category};
+    }
+    private async findArticleById (id: string): Promise<Article> {
+        let article;
+        console.log(this.articleModel);
+        try{
+            article = await this.articleModel.findById(id);
+            console.log(article);
+            return article
+        }catch(error){
+            throw new NotFoundException ('Le produit n'+'a pas été trouvé selon l'+' ID');
+        }
+        
+    }
 
     async insertArticle (title: string, description: string, url: string, cover: string, content:string, category: string){
         const newArticle = new this.articleModel({title, description, url, cover, content, category});
@@ -79,19 +109,10 @@ export class ArticlesService {
         
     // }
 
+
+
     
-    private async findArticleById (id: string): Promise<Article> {
-        let article;
-        console.log(this.articleModel);
-        try{
-            article = await this.articleModel.findById(id);
-            console.log(article);
-            return article
-        }catch(error){
-            throw new NotFoundException ('Le produit n'+'a pas été trouvé selon l'+' ID');
-        }
-        
-    }
+    
 
     
 

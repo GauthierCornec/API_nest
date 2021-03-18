@@ -1,25 +1,33 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { createGunzip } from 'node:zlib';
-import { async } from 'rxjs';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 
 import { ArticlesService } from './articles.service';
+import { Article } from './articles.model'
 
 @Controller('articles')
 export class ArticlesController {
     constructor(private readonly articlesService: ArticlesService) {}
 
     // CREATE REQ @GET LIST ALL ARTICLES 
-    @Get()
-    async getAllArticles() {
-        const articles = await this.articlesService.getArticles();
-        return articles;
-    }
+    // @Get()
+    // async getAllArticles() {
+    //     const articles = await this.articlesService.getArticles();
+    //     return articles;
+    // }
 
-    // CREATE REQ @GET(PARAM:CATEGORY) LIST ONLY CATEGORY 
-    @Get(':category')
-    getArticles(@Param('category') artCategory: string){
-        return this.articlesService.getArticlesByCategory(artCategory);
+    // CREATE REQ @GET(PARAM:CATEGORY) LIST ONLY ARTICLE BY CATEGORY SEARCH
+    @Get()
+     getArticles(@Query('category') category: string,@Query('title') title: string){
+        const articles =  this.articlesService.filterByCategory(category)
+        console.log('category', articles)
+        return [category, title];
     }
+    
+    // @Get()
+    // getArticles(@Query('title') title: string){
+    //     const articles = this.articlesService.filterByTitle(title);
+    //     console.log('title', articles)
+    //     return [title]
+    // }
 
     // CREATE REQ @GET(PARAM: ID) LIST PRODUCT N°ID
     // @Get(':id')
@@ -72,5 +80,13 @@ export class ArticlesController {
     
     
 
+}
+
+function category(category: any, string: any) {
+    throw new Error('Function not implemented.');
+}
+
+function filterByCategory(category: string) {
+    throw new Error('Function not implemented.');
 }
 
