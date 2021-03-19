@@ -11,7 +11,8 @@ export const ArticleSchema = new mongoose.Schema({ // Schema mapé à une collec
   content: {type: String, require: true},
   category: {type: String, require: true},
 },
-)
+// {typeKey: '$type'}
+);
 
 export interface Article extends mongoose.Document {
      id: string,
@@ -23,6 +24,7 @@ export interface Article extends mongoose.Document {
      category: string,
 
 }
+
 
 
 

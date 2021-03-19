@@ -1,6 +1,7 @@
 import { Body, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { model, Model, Query } from 'mongoose';
+import { title } from 'node:process';
 
 
 import { Article, ArticleSchema } from './articles.model'
@@ -16,12 +17,14 @@ export class ArticlesService {
         return articles.map((art) => ({id: art.id, title: art.title, description: art.description, url: art.url, cover: art.cover, content: art.content, category: art.category }));
     }
 
-    // async getArticlesByCategory(category): Promise<Article[]> { // function qui permet d'afficher les articles selon leurs catégories.
-    //     const articles = await this.articleModel.find({category});
-    //     console.log("article", articles);
-    //     return
-
-    // }
+    async getArticles1() { // function qui permet d'afficher l'esemble de la DB
+        const articles = await this.articleModel.find().exec();
+        return articles.map((art) => ({id: art.id, title: art.title, description: art.description, url: art.url, cover: art.cover, content: art.content, category: art.category }));
+    }
+    async getArticles2() { // function qui permet d'afficher l'esemble de la DB
+        const articles = await this.articleModel.find().exec();
+        return articles.map((art) => ({id: art.id, title: art.title, description: art.description, url: art.url, cover: art.cover, content: art.content, category: art.category }));
+    }
 
     async filterByCategory(category: string): Promise<Article[]>{
         const articles = await this.articleModel.find({}).where('category').equals(category).lean();
@@ -31,14 +34,15 @@ export class ArticlesService {
 
     async filterByTitle(title: string): Promise<Article[]>{
         const articles = await this.articleModel.find({}).where('title').equals(title).lean();
-        console.log(articles);
+        console.log('title',articles);
         return articles[title];
     }
 
-    async filterByLetter(letter: string): Promise<Article[]>{
-        const articles = await (await this.articleModel.find()).includes
-        console.log(articles)
-        return
+    async filterByLetter(letters: string): Promise<Article[]>{
+        const articlesT = await this.articleModel.find({}).where('title').regex(letters)
+        const articlesC = await this.articleModel.find({}).where('category').regex(letters)
+        console.log('letters',articlesT, articlesC);
+        return articlesT[letters], articlesC[letters];
     }
 
     // private async findArticlesByCategory(category: string): Promise<Article[]> { 
@@ -102,18 +106,10 @@ export class ArticlesService {
         
     }
 
-    // deleteArticle (artId: string){
-    //     const index = this.findArticleById(artId)[1];
-    //     console.log(index);
-    //     this.articles.splice(index, 1);
+    deleteArticle (artId: string){
+        const index = this.findArticleById(artId)[1];
+        console.log(index);
+        this.articles.splice(index, 1);
         
-    // }
-
-
-
-    
-    
-
-    
-
+    }    
 }

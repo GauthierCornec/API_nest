@@ -8,32 +8,35 @@ export class ArticlesController {
     constructor(private readonly articlesService: ArticlesService) {}
 
     // CREATE REQ @GET LIST ALL ARTICLES 
-    // @Get()
-    // async getAllArticles() {
-    //     const articles = await this.articlesService.getArticles();
-    //     return articles;
-    // }
-
-    // CREATE REQ @GET(PARAM:CATEGORY) LIST ONLY ARTICLE BY CATEGORY SEARCH
     @Get()
-     getArticles(@Query('category') category: string,@Query('title') title: string){
-        const articles =  this.articlesService.filterByCategory(category)
-        console.log('category', articles)
-        return [category, title];
+    async getAllArticles() {
+        console.log('ensemble des artciles');
+        const articles = await this.articlesService.getArticles();
+        return articles;
     }
-    
-    // @Get()
-    // getArticles(@Query('title') title: string){
-    //     const articles = this.articlesService.filterByTitle(title);
-    //     console.log('title', articles)
-    //     return [title]
-    // }
 
     // CREATE REQ @GET(PARAM: ID) LIST PRODUCT N°ID
-    // @Get(':id')
-    // getArticles(@Param('id') artId: string){
-    //     return this.articlesService.getSingleArticleById(artId)
-    // }
+    @Get('/id:id')
+    getArticles(@Param('id') artId: string){
+        console.log('article selon id')
+        return this.articlesService.getSingleArticleById(artId)
+    }
+
+    // CREATE REQ @GET(PARAM:SEARCH CT) 
+    @Get('/searchCT')
+    getArticles1(@Query('category') category: string, @Query('title') title: string ){
+        const articlesC =  this.articlesService.filterByCategory(category);
+        const articlesT = this.articlesService.filterByTitle(title);
+        console.log('category', articlesC, articlesT);
+        return [category, title];
+    }
+
+    @Get('/search')
+    getArticles2(@Query('search') letters:string){
+        const articles = this.articlesService.filterByLetter(letters);
+        console.log('lettre', articles);
+        return [letters];
+    }
 
     // CREATE REQ @POST 
     @Post()
@@ -73,20 +76,9 @@ export class ArticlesController {
 
     // @Delete(':id)')
     // async removeArticle(@Param('id') artId: string){
-    //     this.articlesService.deleteArticle(artId);
+    //     await this.articlesService.deleteArticle(artId);
     //     return null;
     // }
-
-    
-    
-
 }
 
-function category(category: any, string: any) {
-    throw new Error('Function not implemented.');
-}
-
-function filterByCategory(category: string) {
-    throw new Error('Function not implemented.');
-}
 
