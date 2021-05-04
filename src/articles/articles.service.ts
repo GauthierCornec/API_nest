@@ -24,6 +24,7 @@ export class ArticlesService {
     async getArticles2() { // function qui permet d'afficher l'esemble de la DB
         const articles = await this.articleModel.find().exec();
         return articles.map((art) => ({id: art.id, title: art.title, description: art.description, url: art.url, cover: art.cover, content: art.content, category: art.category }));
+        
     }
 
     async filterByCategory(category: string): Promise<Article[]>{
@@ -44,20 +45,6 @@ export class ArticlesService {
         console.log('letters',articlesT, articlesC);
         return articlesT[letters], articlesC[letters];
     }
-
-    // private async findArticlesByCategory(category: string): Promise<Article[]> { 
-    //     let article
-    //     console.log(this.articleModel);
-    //     try{
-    //         article = await this.articleModel.find([category]);
-    //         return article
-
-    //     }catch(error){
-    //         console.log(article);
-    //         throw new NotFoundException('La catégorie n' +'a pas été trouvé');
-    //     }
-       
-    // }
 
     async getSingleArticleById(articleId: string){
         const article = await this.findArticleById(articleId);
@@ -83,6 +70,7 @@ export class ArticlesService {
         console.log(result);
         return result.id as string;
     }
+
     async updateArticle ( id: string, title: string, description: string, url: string, cover: string, content: string, category: string){
         const updateArticle = await this.findArticleById(id);
         
@@ -101,15 +89,17 @@ export class ArticlesService {
         if(content){
             updateArticle.content = content;
         }
-
         updateArticle.save();
-        
+            
     }
 
-    deleteArticle (artId: string){
-        const index = this.findArticleById(artId)[1];
-        console.log(index);
-        this.articles.splice(index, 1);
+    // deleteArticle (artId: string){
+    //     const index = this.findArticleById(artId)[1];
+    //     console.log(index);
+    //     this.articles.splice(index, 1);
         
-    }    
+    // }    
 }
+
+
+

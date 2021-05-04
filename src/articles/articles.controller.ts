@@ -1,7 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 
+// import { hasRole } from '../role/roles.guards'
 import { ArticlesService } from './articles.service';
 import { Article } from './articles.model'
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Role } from '../role/role.enums';
+import { Roles } from '../role/roles.decorator';
 
 @Controller('articles')
 export class ArticlesController {
@@ -34,12 +38,14 @@ export class ArticlesController {
     @Get('/search')
     getArticles2(@Query('search') letters:string){
         const articles = this.articlesService.filterByLetter(letters);
-        console.log('lettre', articles);
-        return [letters];
+        console.log('lettre', [articles]);
+        return ;
     }
 
     // CREATE REQ @POST 
     @Post()
+    @UseGuards(JwtAuthGuard)
+    @Roles(Role.Admin)
     async addArticle(
         @Body('title') artTitle: string,
         @Body('description') artDescription: string,
@@ -60,6 +66,9 @@ export class ArticlesController {
       }
 
     // CREATE REQ @PATCH : MODIFY 
+   
+    @UseGuards(JwtAuthGuard)
+    @Roles(Role.Admin)
     @Patch(':id')
     async updateArticle(
         @Param('id') artId: string,
@@ -73,6 +82,7 @@ export class ArticlesController {
         await this.articlesService.updateArticle(artId, artTitle, artDescription, artUrl, artCover, artContent, artCategory)
         return null;
     }
+
 
     // @Delete(':id)')
     // async removeArticle(@Param('id') artId: string){
